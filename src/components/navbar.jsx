@@ -5,7 +5,7 @@ const Navbar = () => {
     <header className="w-full fixed top-0 left-0 z-50 bg-white shadow-sm py-3 px-6 md:px-12 flex items-center justify-between  text-[15px]">
       {/* Logo */}
       <div className="flex items-center">
-        <img src={logo} alt="PawSewa Logo" className="h-[75px] object-contain ml-8" />
+        <img src={logo} alt="PawSewa Logo" className="h-[78px] object-contain ml-8" />
 
       </div>
 
