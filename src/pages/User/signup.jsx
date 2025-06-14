@@ -6,7 +6,7 @@ import Group1 from "../../assets/group1.png";
 import cat from "../../assets/midcat.png";
 import Navbar from "../../components/navbar";
 
-const Login = () => {
+const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -94,4 +94,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
