@@ -17,7 +17,7 @@ import {
 
 import { useEffect, useRef, useState } from "react";
 import trio from "../../assets/3dogs.png";
-import hero from "../../assets/hero.png";
+import hero from "../../assets/hero1.png";
 import AIChat from "../../components/Aichatbot"; // You must create this component
 import Footer from "../../components/footer";
 import Navbar from "../../components/navbar";
@@ -80,7 +80,7 @@ export default function Home() {
           {/* Right Image */}
           <div className="md:translate-x-20">
             <div className="flex justify-center relative z-10">
-              <img src={hero} alt="Dog and Cat" className="max-h-[380px] md:max-h-[420px] z-10" />
+              <img src={hero} alt="Dog and Cat" className="max-h-[400px] md:max-h-[450px] z-10" />
             </div>
           </div>
         </section>
