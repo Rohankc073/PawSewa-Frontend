@@ -1,21 +1,38 @@
 // src/pages/Products.js
+
 import { useEffect, useState } from "react";
 import Footer from "../../components/footer";
 import Navbar from "../../components/navbar";
 import ProductCard from "../../components/ProductCard";
 
-const Products= ()=> {
-  const [products, setProducts] = useState([]);
+// ✅ Import banners from your assets folder
+import banner2 from "../../assets/banner2.png";
+import banner3 from "../../assets/banner3.png";
+import banner1 from "../../assets/test.png";
 
+const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [bannerIndex, setBannerIndex] = useState(0);
+
+  // ✅ Array of imported banners
+  const banners = [banner1, banner2, banner3];
+
+  // ✅ Auto-slide every 4 seconds
   useEffect(() => {
-    // Temporary dummy data
+    const interval = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  // ✅ Dummy products
+  useEffect(() => {
     const dummyProducts = [
       { id: 1, name: "Pet Carrier", price: 29.99, imageUrl: "https://via.placeholder.com/200" },
       { id: 2, name: "Cat Bowl", price: 20.99, imageUrl: "https://via.placeholder.com/200" },
       { id: 3, name: "Dog Bed", price: 49.99, imageUrl: "https://via.placeholder.com/200" },
       { id: 4, name: "Premium Cat Food", price: 20.99, imageUrl: "https://via.placeholder.com/200" },
       { id: 5, name: "Dog Leash", price: 9.99, imageUrl: "https://via.placeholder.com/200" },
-      // Add more if needed
     ];
     setProducts(dummyProducts);
   }, []);
@@ -25,18 +42,24 @@ const Products= ()=> {
       <Navbar />
 
       <main className="mt-12 text-[#1d1d48]">
-        {/* Hero */}
-        <section className="bg-white px-6 md:px-20 py-20 grid md:grid-cols-2 items-center gap-10">
-          <div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">The friendly and caring small pet store</h1>
-            <p className="text-sm text-[#333] max-w-lg">
-              Our veterinary clinic provides comprehensive and compassionate care for your beloved pets.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <img src="https://via.placeholder.com/400x300" alt="Pet Store Hero" className="rounded-lg shadow" />
-          </div>
-        </section>
+        {/* ✅ Hero Banner Slider */}
+        {/* ✅ Hero Banner Slider - Perfect Fit INSIDE */}
+<section className="relative w-full overflow-hidden bg-[#F9F9F4]">  {/* match your banner background! */}
+  <div className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center">
+    {banners.map((banner, idx) => (
+      <img
+        key={idx}
+        src={banner}
+        alt={`Banner ${idx + 1}`}
+        className={`absolute inset-0 w-full h-full object-contain object-center transition-opacity duration-700 ${
+          idx === bannerIndex ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    ))}
+  </div>
+</section>
+
+
 
         {/* Shop Content */}
         <section className="px-6 md:px-20 pb-20 grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
@@ -90,6 +113,6 @@ const Products= ()=> {
       <Footer />
     </>
   );
-}
-export default Products;
+};
 
+export default Products;
