@@ -19,9 +19,9 @@ import { useEffect, useRef, useState } from "react";
 import trio from "../../assets/3dogs.png";
 import hero from "../../assets/hero1.png";
 import AIChat from "../../components/Aichatbot"; // You must create this component
-import Footer from "../../components/footer";
-import Navbar from "../../components/navbar";
-import ScrollToTopButton from "../../components/scrolltotop";
+import Footer from "../../components/Footer";
+import Navbar from "../../components/Navbar";
+import ScrollToTopButton from "../../components/Scrolltotop";
 
 export default function Home() {
   const footerRef = useRef(null);

@@ -1,6 +1,6 @@
 import contactImg from "../../assets/contactus.jpg";
-import Footer from "../../components/footer";
-import Navbar from "../../components/navbar";
+import Footer from "../../components/Footer";
+import Navbar from "../../components/Navbar";
 
 const ContactUs = () => {
   return (

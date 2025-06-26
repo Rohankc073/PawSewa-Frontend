@@ -4,7 +4,7 @@ import dog2 from "../../assets/dog2.png";
 import Group2 from "../../assets/Group.png";
 import Group1 from "../../assets/group1.png";
 import cat from "../../assets/midcat.png";
-import Navbar from "../../components/navbar";
+import Navbar from "../../components/Navbar";
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);

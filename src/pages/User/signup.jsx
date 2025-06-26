@@ -1,24 +1,69 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ for redirect
+import { toast } from "react-toastify"; // ✅ for toast
+import { registerUser } from "../../apis/api"; // ✅ your API
+
 import dog1 from "../../assets/dog1.png";
 import dog2 from "../../assets/dog2.png";
 import Group2 from "../../assets/Group.png";
 import Group1 from "../../assets/group1.png";
 import cat from "../../assets/midcat.png";
-import Navbar from "../../components/navbar";
+import Navbar from "../../components/Navbar";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSignup = async (e) => {
+  e.preventDefault();
+
+  if (form.password !== form.confirmPassword) {
+    toast.error("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await registerUser({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
+    });
+
+    if (response?.token) {
+      localStorage.setItem("token", response.token);
+      toast.success("Signup successful 🎉");
+      setTimeout(() => navigate("/"), 2000);
+    } else {
+      toast.error("Signup failed: No token received.");
+    }
+  } catch (err) {
+    const message =
+      err.response?.data?.message || "Signup failed. Please try again.";
+    toast.error(message);
+  }
+};
+
 
   return (
     <>
       <Navbar />
 
-      {/* Top Semicircle */}
       <div className="absolute -top-[50px] left-[200px] w-[220px] h-[120px] bg-[#e9e9d8] rounded-b-full z-[60] pointer-events-none" />
 
-      <div className="h-screen bg-white px-6 md:px-20 py-16 grid md:grid-cols-2 items-start gap-12 relative overflow-hidden">
-        
+      <div className="min-h-screen bg-white px-6 md:px-20 py-16 grid md:grid-cols-2 items-start gap-12 relative overflow-hidden">
         {/* Background Paw Icons */}
         <img src={Group1} alt="Decorative Paw 1" className="absolute left-[1%] bottom-[2%] w-[1000px] opacity-60 z-0" />
         <img src={Group1} alt="Decorative Paw 1" className="absolute left-[20%] bottom-[15%] w-[900px] opacity-80 z-0" />
@@ -35,9 +80,6 @@ const Signup = () => {
           <img src={dog2} alt="Dog 2" className="absolute left-[75%] top-[10%] w-[28%] h-auto object-cover rounded-[120px] shadow-md" />
         </div>
 
-        {/* Bottom Left Circle */}
-        <div className="absolute bottom-0 left-0 w-[220px] h-[220px] bg-[#e9e9d8] rounded-full z-0 translate-x-[-30%] translate-y-[25%]" />
-
         {/* Signup Form */}
         <div className="bg-white shadow-lg rounded-2xl px-10 pt-10 pb-12 max-w-md w-full border border-gray-100 z-20 relative translate-x-[30%] translate-y-[15%]">
           <h2 className="text-3xl font-bold mb-2 text-black">Sign Up Here</h2>
@@ -45,45 +87,58 @@ const Signup = () => {
             View all of your reports and scheduled health exams in one location.
           </p>
 
-          <form className="space-y-6 text-[14px]">
+          <form onSubmit={handleSignup} className="space-y-6 text-[14px]">
             <input
+              name="name"
               type="text"
+              value={form.name}
+              onChange={handleChange}
               placeholder="Full Name"
-              className="w-full border-[1px] border-[#1e1e4b] rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#8b8a47] focus:border-transparent transition-all"
+              className="w-full border border-[#1e1e4b] rounded-xl px-5 py-3"
             />
 
             <input
+              name="email"
               type="email"
+              value={form.email}
+              onChange={handleChange}
               placeholder="Email"
-              className="w-full border-[1px] border-[#1e1e4b] rounded-xl px-5 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#8b8a47] focus:border-transparent transition-all"
+              className="w-full border border-[#1e1e4b] rounded-xl px-5 py-3"
+            />
+
+            <input
+              name="phone"
+              type="tel"
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              className="w-full border border-[#1e1e4b] rounded-xl px-5 py-3"
             />
 
             <div className="relative">
               <input
+                name="password"
                 type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={handleChange}
                 placeholder="Password"
-                className="w-full border-[1px] border-[#1e1e4b] rounded-xl px-5 py-3 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-[#8b8a47] focus:border-transparent transition-all"
+                className="w-full border border-[#1e1e4b] rounded-xl px-5 py-3 pr-12"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xl"
-              >
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 transform -translate-y-1/2">
                 {showPassword ? "🐶" : "🐾"}
               </button>
             </div>
 
             <div className="relative">
               <input
+                name="confirmPassword"
                 type={showConfirm ? "text" : "password"}
+                value={form.confirmPassword}
+                onChange={handleChange}
                 placeholder="Confirm Password"
-                className="w-full border-[1px] border-[#1e1e4b] rounded-xl px-5 py-3 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-[#8b8a47] focus:border-transparent transition-all"
+                className="w-full border border-[#1e1e4b] rounded-xl px-5 py-3 pr-12"
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xl"
-              >
+              <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 transform -translate-y-1/2">
                 {showConfirm ? "🐶" : "🐾"}
               </button>
             </div>
