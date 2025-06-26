@@ -9,6 +9,7 @@ import ForgotPassword from "./pages/User/forgetPassword";
 import Home from "./pages/User/home";
 import Login from "./pages/User/login";
 import Products from './pages/User/Product';
+import ProductDetail from "./pages/User/ProductDetail";
 import Profile from "./pages/User/Profile";
 import ResetPassword from "./pages/User/resetPassword";
 import Signup from "./pages/User/signup";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/forget-password" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
         </Routes>
       </>
     </Router>
