@@ -6,7 +6,7 @@ import EnhancedDoctorCards from "../../components/DoctorCard";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 
-// Filter Component
+// ✅ FilterBar Component
 const FilterBar = ({ onFilterChange, resetFilters }) => {
   const [filters, setFilters] = useState({
     specialty: '',
@@ -22,13 +22,13 @@ const FilterBar = ({ onFilterChange, resetFilters }) => {
   };
 
   const handleReset = () => {
-    const resetFilters = {
+    const reset = {
       specialty: '',
       rating: '',
       experience: '',
       bookingFee: ''
     };
-    setFilters(resetFilters);
+    setFilters(reset);
     resetFilters();
   };
 
@@ -37,7 +37,7 @@ const FilterBar = ({ onFilterChange, resetFilters }) => {
       <h3 className="text-lg font-semibold text-[#1d1d48] mb-4">
         Find a doctor at your own ease
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4 items-end">
         {/* Specialty Filter */}
         <div className="space-y-2">
@@ -103,17 +103,17 @@ const FilterBar = ({ onFilterChange, resetFilters }) => {
           </select>
         </div>
 
-        {/* Action Buttons */}
+        {/* Buttons */}
         <div className="flex gap-3">
           <button
             onClick={() => onFilterChange(filters)}
-            className="flex-1 bg-[#8a8a3b] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#7a7a33] transition-colors duration-200 shadow-md hover:shadow-lg"
+            className="flex-1 bg-[#8a8a3b] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#7a7a33] transition"
           >
             Search
           </button>
           <button
             onClick={handleReset}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition"
           >
             Reset
           </button>
@@ -123,107 +123,53 @@ const FilterBar = ({ onFilterChange, resetFilters }) => {
   );
 };
 
+// ✅ Appointment Page Component
 export default function Appointment() {
   const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
 
   useEffect(() => {
-    const dummyDoctors = [
-      { 
-        id: 1, 
-        name: "Dr Anjali Shrestha", 
-        experience: 9, 
-        rating: 5, 
-        specialty: "surgery",
-        bookingFee: "medium",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-      { 
-        id: 2, 
-        name: "Dr Dhiraj Bolero", 
-        experience: 5, 
-        rating: 5, 
-        specialty: "general",
-        bookingFee: "free",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-      { 
-        id: 3, 
-        name: "Dr Pepper Potts", 
-        experience: 5, 
-        rating: 5, 
-        specialty: "cardiology",
-        bookingFee: "low",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-      { 
-        id: 4, 
-        name: "Dr Tony Stark", 
-        experience: 4, 
-        rating: 5, 
-        specialty: "orthopedic",
-        bookingFee: "high",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-      { 
-        id: 5, 
-        name: "Dr Meghan Carter", 
-        experience: 3, 
-        rating: 4, 
-        specialty: "dermatology",
-        bookingFee: "medium",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-      { 
-        id: 6, 
-        name: "Dr Dev Patel", 
-        experience: 2, 
-        rating: 5, 
-        specialty: "general",
-        bookingFee: "free",
-        imageUrl: "https://via.placeholder.com/100" 
-      },
-    ];
-    setDoctors(dummyDoctors);
-    setFilteredDoctors(dummyDoctors);
+    const fetchDoctors = async () => {
+      try {
+        const res = await fetch("http://localhost:5005/vet/all");
+        const data = await res.json();
+        setDoctors(data);
+        setFilteredDoctors(data);
+      } catch (err) {
+        console.error("Failed to fetch doctors:", err);
+      }
+    };
+
+    fetchDoctors();
   }, []);
 
   const handleFilterChange = (filters) => {
     let filtered = [...doctors];
 
-    // Filter by specialty
     if (filters.specialty) {
-      filtered = filtered.filter(doctor => doctor.specialty === filters.specialty);
+      filtered = filtered.filter(doc => doc.specialization === filters.specialty);
     }
 
-    // Filter by rating
     if (filters.rating) {
       const minRating = parseInt(filters.rating);
-      filtered = filtered.filter(doctor => doctor.rating >= minRating);
+      filtered = filtered.filter(doc => doc.rating >= minRating);
     }
 
-    // Filter by experience
     if (filters.experience) {
-      filtered = filtered.filter(doctor => {
-        const exp = doctor.experience;
+      filtered = filtered.filter(doc => {
+        const exp = doc.experience;
         switch (filters.experience) {
-          case '1-3':
-            return exp >= 1 && exp <= 3;
-          case '4-6':
-            return exp >= 4 && exp <= 6;
-          case '7-10':
-            return exp >= 7 && exp <= 10;
-          case '10+':
-            return exp >= 10;
-          default:
-            return true;
+          case '1-3': return exp >= 1 && exp <= 3;
+          case '4-6': return exp >= 4 && exp <= 6;
+          case '7-10': return exp >= 7 && exp <= 10;
+          case '10+': return exp >= 10;
+          default: return true;
         }
       });
     }
 
-    // Filter by booking fee
     if (filters.bookingFee) {
-      filtered = filtered.filter(doctor => doctor.bookingFee === filters.bookingFee);
+      filtered = filtered.filter(doc => doc.bookingFee === filters.bookingFee);
     }
 
     setFilteredDoctors(filtered);
@@ -236,12 +182,10 @@ export default function Appointment() {
   return (
     <>
       <Navbar />
-      <main className="mt-12 text-[#1d1d48]">
-
-        {/* ✅ Hero Section */}
+      <main className="mt-4 text-[#1d1d48]">
+        {/* Hero Section */}
         <section className="relative bg-[#8a8a3b] overflow-hidden pb-20">
           <div className="grid md:grid-cols-2 h-[540px]">
-            {/* Left: Text */}
             <div className="px-6 md:px-20 flex flex-col justify-center text-white space-y-6">
               <h1 className="text-3xl md:text-5xl font-bold leading-tight">
                 Book Your Next Doctor Visit in Seconds.
@@ -251,8 +195,6 @@ export default function Appointment() {
                 quality products, and instant AI support—all in one place.
               </p>
             </div>
-
-            {/* Right: Image */}
             <div className="w-full h-full">
               <img
                 src={appointmentHero}
@@ -263,14 +205,11 @@ export default function Appointment() {
           </div>
         </section>
 
-        {/* ✅ Filter Bar - Overlapping the hero section */}
-        <FilterBar 
-          onFilterChange={handleFilterChange}
-          resetFilters={resetFilters}
-        />
+        {/* Filter Bar */}
+        <FilterBar onFilterChange={handleFilterChange} resetFilters={resetFilters} />
 
-        {/* ✅ Doctor Cards Grid */}
-        <section className="px-6 md:px-20 pb-20">
+        {/* Doctor Cards Section */}
+        <section className="px-6 md:px-20 -mt-20">
           {filteredDoctors.length > 0 ? (
             <EnhancedDoctorCards doctors={filteredDoctors} />
           ) : (
@@ -286,34 +225,3 @@ export default function Appointment() {
     </>
   );
 }
-
-
-
-
-
-
-{/* ✅ Overlapping Filter Bar */}
-          {/* <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-20">
-            <div className="bg-white shadow-lg rounded-xl p-6 grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
-              <select className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full">
-                <option>🐾 Veterinary</option>
-              </select>
-              <select className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full">
-                <option>⭐ 5</option>
-              </select>
-              <select className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full">
-                <option>⏳ 2-10 years</option>
-              </select>
-              <select className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full">
-                <option>💰 No</option>
-              </select>
-              <div className="flex gap-2">
-                <button className="bg-[#747134] text-white px-4 py-2 rounded-md text-sm hover:bg-[#5f5e2a]">
-                  Search
-                </button>
-                <button className="border border-[#747134] text-[#747134] px-4 py-2 rounded-md text-sm hover:bg-[#f8f8f1]">
-                  Reset
-                </button>
-              </div>
-            </div>
-          </div> */}

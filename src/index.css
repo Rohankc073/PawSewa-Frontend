@@ -14,3 +14,7 @@
 body {
   font-family: "Poppins", sans-serif;
 }
+
+.input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#747134];
+}
