@@ -10,8 +10,7 @@ const CartPage = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
-
-  const heroImage = "/assets/hero-cart.jpg"; // ✅ Make sure this image exists in public/assets
+  const heroImage = "/assets/hero-cart.jpg";
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -20,8 +19,26 @@ const CartPage = () => {
           const res = await fetch(`http://localhost:5005/cart/${user._id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          const data = await res.json();
-          setCartItems(data.items || []);
+          const cartData = await res.json();
+
+          // 🔄 Fetch product details for each productId
+          const enrichedItems = await Promise.all(
+            (cartData.items || []).map(async (item) => {
+              try {
+                const prodRes = await fetch(`http://localhost:5005/product/${item.productId}`);
+                const prodData = await prodRes.json();
+                return {
+                  ...item,
+                  image: prodData.product?.image || "",
+                };
+              } catch (err) {
+                console.error("Error fetching product detail:", err);
+                return item; // fallback without image
+              }
+            })
+          );
+
+          setCartItems(enrichedItems);
         } catch (err) {
           console.error("Failed to load cart:", err);
         }
@@ -33,7 +50,7 @@ const CartPage = () => {
   }, [user, token]);
 
   useEffect(() => {
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.product?.price || 0) * item.quantity, 0);
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
     const shipping = 600;
     const tax = 0.13 * subtotal;
     const total = subtotal + shipping + tax;
@@ -42,7 +59,7 @@ const CartPage = () => {
 
   const updateQuantity = async (productId, amount) => {
     const updated = cartItems.map(item =>
-      item.product?._id === productId
+      item.productId === productId
         ? { ...item, quantity: Math.max(1, item.quantity + amount) }
         : item
     );
@@ -53,13 +70,13 @@ const CartPage = () => {
       body: JSON.stringify({
         userId: user._id,
         productId,
-        quantity: updated.find(i => i.product?._id === productId).quantity,
+        quantity: updated.find(i => i.productId === productId).quantity,
       }),
     });
   };
 
   const removeFromCart = async (productId) => {
-    const filtered = cartItems.filter(item => item.product?._id !== productId);
+    const filtered = cartItems.filter(item => item.productId !== productId);
     setCartItems(filtered);
     await fetch("http://localhost:5005/cart/remove", {
       method: "DELETE",
@@ -107,36 +124,32 @@ const CartPage = () => {
           {/* Cart Items */}
           <div className="space-y-6">
             {cartItems.length > 0 ? (
-              cartItems.map(({ product, quantity }) =>
-                product && (
-                  <div
-                    key={product._id}
-                    className="border rounded-xl flex p-4 gap-4 items-center shadow-sm bg-white"
-                  >
-                    <img src={product.image} alt={product.name} className="w-32 h-32 object-contain" />
-                    <div className="flex-1 space-y-2">
-                      <h2 className="font-semibold text-[#1d1d48]">{product.name}</h2>
-                      <p className="text-sm text-gray-500">{product.manufacturer}</p>
-                      <p className="text-red-600 font-bold">NPR {product.price}</p>
-                      <div className="flex items-center gap-3 mt-2">
-                        <button onClick={() => updateQuantity(product._id, -1)} className="border rounded p-1">
-                          <Minus size={16} />
-                        </button>
-                        <span>{quantity}</span>
-                        <button onClick={() => updateQuantity(product._id, 1)} className="border rounded p-1">
-                          <Plus size={16} />
-                        </button>
-                      </div>
+              cartItems.map(({ productId, name, price, manufacturer, quantity, image }) => (
+                <div key={productId} className="border rounded-xl flex p-4 gap-4 items-center shadow-sm bg-white">
+                  <img
+                    src={image || "/placeholder.png"}
+                    alt={name}
+                    className="w-32 h-32 object-contain bg-gray-100 rounded-lg"
+                  />
+                  <div className="flex-1 space-y-2">
+                    <h2 className="font-semibold text-[#1d1d48]">{name}</h2>
+                    {manufacturer && <p className="text-sm text-gray-500">{manufacturer}</p>}
+                    <p className="text-red-600 font-bold">NPR {price}</p>
+                    <div className="flex items-center gap-3 mt-2">
+                      <button onClick={() => updateQuantity(productId, -1)} className="border rounded p-1">
+                        <Minus size={16} />
+                      </button>
+                      <span>{quantity}</span>
+                      <button onClick={() => updateQuantity(productId, 1)} className="border rounded p-1">
+                        <Plus size={16} />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => removeFromCart(product._id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 />
-                    </button>
                   </div>
-                )
-              )
+                  <button onClick={() => removeFromCart(productId)} className="text-red-500 hover:text-red-700">
+                    <Trash2 />
+                  </button>
+                </div>
+              ))
             ) : (
               <p className="text-gray-600 text-center">Your cart is empty.</p>
             )}
