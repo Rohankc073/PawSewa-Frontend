@@ -81,7 +81,7 @@ const Signup = () => {
         </div>
 
         {/* Signup Form */}
-        <div className="bg-white shadow-lg rounded-2xl px-10 pt-10 pb-12 max-w-md w-full border border-gray-100 z-20 relative translate-x-[30%] translate-y-[15%]">
+        <div className="bg-white shadow-lg rounded-2xl px-10 pt-10 pb-12 max-w-md w-full border border-gray-100 z-20 relative translate-x-[30%] translate-y-[10%]">
           <h2 className="text-3xl font-bold mb-2 text-black">Sign Up Here</h2>
           <p className="text-[14px] text-[#8b8a47] mb-8 leading-snug">
             View all of your reports and scheduled health exams in one location.

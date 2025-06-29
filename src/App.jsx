@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 // pages
 import Appointment from "./pages/User/appointment";
 import AppointmentForm from "./pages/User/AppointmentForm";
+import CartPage from "./pages/User/Cart";
 import ContactUs from './pages/User/contactus';
 import DoctorDetail from "./pages/User/DoctorDetail";
 import ForgotPassword from "./pages/User/forgetPassword";
@@ -15,6 +16,7 @@ import ProductDetail from "./pages/User/ProductDetail";
 import Profile from "./pages/User/Profile";
 import ResetPassword from "./pages/User/resetPassword";
 import Signup from "./pages/User/signup";
+import SimpleCartTest from "./pages/User/simplecart";
 
 function App() {
   return (
@@ -31,8 +33,11 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/forget-password" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/simp-cart" element={<SimpleCartTest />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/doctor/:id" element={<DoctorDetail />} />
+
           <Route path="/appointment-booking/:id" element={<AppointmentForm />} />
 
           

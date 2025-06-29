@@ -1,18 +1,41 @@
-// src/components/ProductCard.js
+import axios from "axios";
 import { Eye, Heart, ShoppingCart, Star } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ProductCard({ product }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
 
-  // Generate random rating for demo (you can replace with actual product rating)
-  const rating = product.rating || (Math.random() * 2 + 3); // 3-5 stars
+  const handleAddToCart = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user._id) {
+      toast.error("Please login to add items to cart");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:5005/cart/add", {
+        userId: user._id,
+        productId: product._id,
+        quantity: 1,
+      });
+
+      toast.success("Added to cart successfully!");
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      toast.error("Failed to add to cart");
+    }
+  };
+
+  const rating = product.rating || (Math.random() * 2 + 3);
   const reviews = product.reviews || Math.floor(Math.random() * 200 + 10);
   const isOnSale = product.originalPrice && product.originalPrice > product.price;
   const discountPercent = isOnSale
@@ -21,14 +44,12 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="group border border-gray-100 rounded-xl p-4 hover:shadow-xl hover:border-[#747134]/20 transition-all duration-300 relative bg-white transform hover:-translate-y-1">
-      {/* Sale Badge */}
       {isOnSale && (
         <div className="absolute top-3 left-3 bg-[#747134] text-white px-2 py-1 rounded-full text-xs font-semibold z-10">
           -{discountPercent}%
         </div>
       )}
 
-      {/* Favorite Button */}
       <button
         onClick={toggleFavorite}
         className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 z-10 ${
@@ -44,7 +65,6 @@ export default function ProductCard({ product }) {
         />
       </button>
 
-      {/* Product Image and Quick View Overlay */}
       <div className="relative overflow-hidden rounded-lg mb-4 bg-gray-50">
         <img
           src={product.imageUrl}
@@ -70,13 +90,11 @@ export default function ProductCard({ product }) {
         </Link>
       </div>
 
-      {/* Product Info */}
       <div className="space-y-2">
         <h3 className="font-semibold text-[#1d1d48] group-hover:text-[#747134] transition-colors duration-300 line-clamp-2 min-h-[3rem] flex items-center">
           {product.name}
         </h3>
 
-        {/* Rating */}
         <div className="flex items-center gap-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, i) => (
@@ -96,7 +114,6 @@ export default function ProductCard({ product }) {
           <span className="text-xs text-gray-500">({reviews})</span>
         </div>
 
-        {/* Price */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[#1d1d48] font-bold text-lg">
@@ -115,14 +132,15 @@ export default function ProductCard({ product }) {
           )}
         </div>
 
-        {/* Add to Cart Button */}
-        <button className="bg-[#747134] text-white w-full py-3 rounded-lg font-medium hover:bg-[#5f5e2a] transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]">
+        <button
+          onClick={handleAddToCart}
+          className="bg-[#747134] text-white w-full py-3 rounded-lg font-medium hover:bg-[#5f5e2a] transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform hover:scale-[1.02] active:scale-[0.98]"
+        >
           <ShoppingCart size={18} />
           Add to Cart
         </button>
       </div>
 
-      {/* Bottom Border Hover Accent */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#747134] to-[#1d1d48] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-xl"></div>
     </div>
   );

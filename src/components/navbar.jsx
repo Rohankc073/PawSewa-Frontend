@@ -1,3 +1,5 @@
+import axios from "axios";
+import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/PawLogo.png";
@@ -5,20 +7,25 @@ import logo from "../assets/PawLogo.png";
 const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  // const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    // const storedCart = localStorage.getItem("cart");
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
 
-    // if (storedCart) {
-    //   const parsedCart = JSON.parse(storedCart);
-    //   setCartCount(parsedCart.items?.length || 0);
-    // }
+      // ✅ Fetch cart item count
+      axios
+        .get(`http://localhost:5005/cart/${parsedUser._id}`)
+        .then((res) => {
+          setCartCount(res.data.cart?.items?.length || 0);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch cart:", err);
+        });
+    }
   }, []);
 
   return (
@@ -39,29 +46,27 @@ const Navbar = () => {
 
       {/* Right Section */}
       <div className="flex items-center space-x-6">
-        {/* Cart */}
-        {/* <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
-          <ShoppingCart className="w-7 h-7 text-[#747134]" />
-          <span className="absolute -top-2 -right-2 bg-[#1e1e4b] text-white rounded-full text-xs px-2 py-0.5">
-            {cartCount}
-          </span>
-        </div> */}
+        {/* ✅ Cart Button - Only when logged in */}
+        {user && (
+          <div className="relative cursor-pointer" onClick={() => navigate("/cart")}>
+            <ShoppingCart className="w-7 h-7 text-[#747134]" />
+            <span className="absolute -top-2 -right-2 bg-[#1e1e4b] text-white rounded-full text-xs px-2 py-0.5">
+              {cartCount}
+            </span>
+          </div>
+        )}
 
-        {/* Auth / User */}
+        {/* ✅ Profile OR Auth Buttons */}
         {user ? (
           <div
             className="flex items-center space-x-2 border border-[#747134] rounded-full px-4 py-1 cursor-pointer"
-            onClick={() => navigate("/profile")} // ✅ Navigate to profile
+            onClick={() => navigate("/profile")}
           >
-   <img
-  src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png"
-  alt="User Avatar"
-  className="w-8 h-8 rounded-full object-cover"
-/>
-
-
-
-
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png"
+              alt="User Avatar"
+              className="w-8 h-8 rounded-full object-cover"
+            />
             <span className="text-[#747134] font-semibold">{user.name}</span>
           </div>
         ) : (
