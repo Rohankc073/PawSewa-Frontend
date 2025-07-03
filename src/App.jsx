@@ -11,6 +11,7 @@ import DoctorDetail from "./pages/User/DoctorDetail";
 import ForgotPassword from "./pages/User/forgetPassword";
 import Home from "./pages/User/home";
 import Login from "./pages/User/login";
+import PetAdoption from "./pages/User/PetAdoption";
 import Products from './pages/User/Product';
 import ProductDetail from "./pages/User/ProductDetail";
 import Profile from "./pages/User/Profile";
@@ -33,6 +34,7 @@ function App() {
           <Route path="/forget-password" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/adopt" element={<PetAdoption />} />
 
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/doctor/:id" element={<DoctorDetail />} />
