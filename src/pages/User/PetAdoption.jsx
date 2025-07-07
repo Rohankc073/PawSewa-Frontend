@@ -1,3 +1,11 @@
+import {
+  Cpu,
+  Heart,
+  HeartHandshake,
+  Scissors,
+  ShoppingCart,
+  Stethoscope
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import petImage from "../../assets/adopt1.png";
 import Footer from "../../components/Footer";
@@ -135,8 +143,6 @@ const PetAdoption = () => {
   />
 </div>
 
-
-
                     {/* Floating decorative elements */}
                     <div className="absolute -top-6 -left-6 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
                       <span className="text-2xl">🐾</span>
@@ -150,31 +156,24 @@ const PetAdoption = () => {
                   </div>
                 </div>
                 </div>
-
-
           </div>
         </section>
 
-        {/* Services Section */}
-        <section className="bg-[#747134] py-4">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-4">
-              {[
-                { icon: "🤖", title: "AI Integration", arrow: "→" },
-                { icon: "🛍️", title: "Pet Supplies", arrow: "→" },
-                { icon: "✂️", title: "Grooming Service", arrow: "→" },
-                { icon: "🏥", title: "Veterinary Support", arrow: "→" },
-                { icon: "🏠", title: "Pet Adoption", arrow: "→" }
-              ].map((service, index) => (
-                <div key={index} className="flex items-center justify-center text-white py-3 md:py-4 hover:bg-white/10 transition-colors rounded-lg">
-                  <span className="text-lg md:text-xl mr-2">{service.icon}</span>
-                  <span className="font-medium text-xs md:text-sm text-center">{service.title}</span>
-                  <span className="ml-1 md:ml-2 text-sm md:text-lg opacity-70">{service.arrow}</span>
-                </div>
-              ))}
-            </div>
+        {/* Scrolling Category Strip */}
+        <div className="overflow-hidden bg-[#747134] py-3 shadow">
+          <div className="flex animate-marquee whitespace-nowrap space-x-16 text-white text-sm font-medium tracking-wide">
+            {[...Array(4)].map((_, loopIdx) => (
+              <div className="flex items-center space-x-10" key={loopIdx}>
+                <span className="flex items-center gap-2"><Cpu size={18} className="text-white" /> AI Integration</span>
+                <span className="flex items-center gap-2"><ShoppingCart size={18} className="text-white" /> Pet Supplies</span>
+                <span className="flex items-center gap-2"><Scissors size={18} className="text-white" /> Grooming Service</span>
+                <span className="flex items-center gap-2"><Stethoscope size={18} className="text-white" /> Veterinary Support</span>
+                <span className="flex items-center gap-2"><HeartHandshake size={18} className="text-white" /> Pet Adoption</span>
+                <span className="flex items-center gap-2"><Heart size={18} className="text-white" /> Pet Care</span>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
 
         {/* Filters and Cards */}
         <section className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8 max-w-7xl mx-auto px-4 py-12">

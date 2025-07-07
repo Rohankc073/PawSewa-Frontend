@@ -10,7 +10,6 @@ import CartPage from "./pages/User/Cart";
 import CheckoutPage from "./pages/User/CheckoutPage";
 import ContactUs from './pages/User/contactus';
 import DoctorDetail from "./pages/User/DoctorDetail";
-import ForgotPassword from "./pages/User/forgetPassword";
 import Home from "./pages/User/home";
 import Login from "./pages/User/login";
 import PetAdoption from "./pages/User/PetAdoption";
@@ -18,14 +17,21 @@ import PetDetailPage from "./pages/User/PetDetail";
 import Products from './pages/User/Product';
 import ProductDetail from "./pages/User/ProductDetail";
 import Profile from "./pages/User/Profile";
-import ResetPassword from "./pages/User/resetPassword";
+
+import ForgotPassword from "./pages/User/ForgetPassword";
+import MyAdoptions from "./pages/User/MyAdoption";
+import MyAppointment from "./pages/User/MyAppointment";
+import MyOrders from "./pages/User/MyOrder";
+import PaymentFailure from "./pages/User/PaymentFailure";
+import PaymentSuccess from "./pages/User/PaymentSuccess";
+import ResetPassword from "./pages/User/ResetPassword";
 import Signup from "./pages/User/signup";
 
 function App() {
   return (
     <Router>
       <>
-        <ToastContainer position="top-center" autoClose={2000} />
+        <ToastContainer position="top-right" autoClose={2000} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -33,12 +39,18 @@ function App() {
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/product" element={<Products />} />
           <Route path="/appointment" element={<Appointment />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/forget-password" element={<ForgotPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+<Route path="/paymentsuccess" element={<PaymentSuccess />} />
+<Route path="/paymentfailure" element={<PaymentFailure />} />
+     
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/adopt" element={<PetAdoption />} />
+          <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/adoption/:petId" element={<PetDetailPage />} />
+          <Route path="/my-adoptions" element={<MyAdoptions />} />
 
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/doctor/:id" element={<DoctorDetail />} />
@@ -46,6 +58,7 @@ function App() {
 
           <Route path="/appointment-booking/:id" element={<AppointmentForm />} />
           <Route path="/adoption-form/:petId" element={<AdoptionForm />} />
+          <Route path="/my-appointments" element={<MyAppointment />} />
 
 
           

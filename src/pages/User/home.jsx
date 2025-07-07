@@ -111,12 +111,12 @@ export default function Home() {
     {[
       {
         title: "Safe & Secure Spaces",
-        desc: "Clean, hygienic, and secure environments designed for your pet’s comfort and wellbeing.",
+        desc: "Clean, hygienic, and secure environments designed for your pet's comfort and wellbeing.",
         icon: ShieldCheck,
       },
       {
         title: "Tailored Advice",
-        desc: "Expert recommendations and ongoing support personalized to your pet’s needs.",
+        desc: "Expert recommendations and ongoing support personalized to your pet's needs.",
         icon: Lightbulb,
       },
       {
@@ -144,90 +144,95 @@ export default function Home() {
   </div>
 </section>
 
-{showAIButton && (
-  <button
-    onClick={() => setIsChatOpen(true)}
-    className="fixed bottom-5 right-5 bg-[#747134] p-3 rounded-full text-white shadow-lg hover:bg-[#5f5e2a] transition-all z-50"
-    aria-label="Ask PawSewa AI"
-  >
-    <MessageCircle size={22} />
-  </button>
-)}
-
-<AIChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
-
         {/* Mission Section */}
-  
+        <section className="bg-white px-6 md:px-20 py-20 flex flex-col md:flex-row items-center justify-between gap-10">
+          {/* Left Image */}
+          <div className="md:order-2 flex justify-center w-full md:w-1/2">
+            <img src={trio} alt="Trio Pets" className="w-[90%] md:w-[480px]" />
+          </div>
 
-<section className="bg-white px-6 md:px-20 py-20 flex flex-col md:flex-row items-center justify-between gap-10">
-  {/* Left Image */}
-  <div className="md:order-2 flex justify-center w-full md:w-1/2">
-    <img src={trio} alt="Trio Pets" className="w-[90%] md:w-[480px]" />
-  </div>
+          {/* Right Content */}
+          <div className="max-w-xl md:w-1/2">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-snug text-[#1d1d48]">
+              Because They're Family — <br /> Not Just Pets
+            </h2>
+            <p className="text-gray-700 text-sm mb-6 leading-relaxed">
+              At PawSewa, we go beyond pet care — we nurture bonds. From regular health checkups to stress-free grooming, we treat your pets with the same love and care they give you every day.
+            </p>
 
-  {/* Right Content */}
-  <div className="max-w-xl md:w-1/2">
-    <h2 className="text-2xl md:text-3xl font-bold mb-4 leading-snug text-[#1d1d48]">
-      Because They’re Family — <br /> Not Just Pets
-    </h2>
-    <p className="text-gray-700 text-sm mb-6 leading-relaxed">
-      At PawSewa, we go beyond pet care — we nurture bonds. From regular health checkups to stress-free grooming, we treat your pets with the same love and care they give you every day.
-    </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-800">
+              <div className="flex gap-3 items-start">
+                <div className="bg-[#747134] p-2 rounded-full">
+                  <Bath size={18} className="text-white" />
+                </div>
+                <p>
+                  <strong>Gentle Grooming</strong><br />
+                  Comfortable, calming spaces with soft, skillful hands.
+                </p>
+              </div>
+              <div className="flex gap-3 items-start">
+                <div className="bg-[#747134] p-2 rounded-full">
+                  <Syringe size={18} className="text-white" />
+                </div>
+                <p>
+                  <strong>Preventive Vet Care</strong><br />
+                  Proactive support from caring medical professionals.
+                </p>
+              </div>
+              <div className="flex gap-3 items-start">
+                <div className="bg-[#747134] p-2 rounded-full">
+                  <Brain size={18} className="text-white" />
+                </div>
+                <p>
+                  <strong>Smart Pet Solutions</strong><br />
+                  Tech-backed insights for lifelong pet wellness.
+                </p>
+              </div>
+              <div className="flex gap-3 items-start">
+                <div className="bg-[#747134] p-2 rounded-full">
+                  <Users size={18} className="text-white" />
+                </div>
+                <p>
+                  <strong>A Caring Community</strong><br />
+                  Built for pet lovers, by pet lovers — always.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-800">
-      <div className="flex gap-3 items-start">
-        <div className="bg-[#747134] p-2 rounded-full">
-          <Bath size={18} className="text-white" />
-        </div>
-        <p>
-          <strong>Gentle Grooming</strong><br />
-          Comfortable, calming spaces with soft, skillful hands.
-        </p>
-      </div>
-      <div className="flex gap-3 items-start">
-        <div className="bg-[#747134] p-2 rounded-full">
-          <Syringe size={18} className="text-white" />
-        </div>
-        <p>
-          <strong>Preventive Vet Care</strong><br />
-          Proactive support from caring medical professionals.
-        </p>
-      </div>
-      <div className="flex gap-3 items-start">
-        <div className="bg-[#747134] p-2 rounded-full">
-          <Brain size={18} className="text-white" />
-        </div>
-        <p>
-          <strong>Smart Pet Solutions</strong><br />
-          Tech-backed insights for lifelong pet wellness.
-        </p>
-      </div>
-      <div className="flex gap-3 items-start">
-        <div className="bg-[#747134] p-2 rounded-full">
-          <Users size={18} className="text-white" />
-        </div>
-        <p>
-          <strong>A Caring Community</strong><br />
-          Built for pet lovers, by pet lovers — always.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+        {/* AI Chat Button - Fixed positioning to avoid overlap */}
+        {showAIButton && (
+          <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-2">
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="group relative bg-[#747134] hover:bg-[#5f5e2a] p-4 rounded-full text-white shadow-lg transition-all duration-300 transform hover:scale-105"
+              aria-label="Ask PawSewa AI"
+            >
+              <MessageCircle size={24} className="transition-transform group-hover:scale-110" />
+              
+              {/* Pulse animation */}
+              <div className="absolute inset-0 rounded-full bg-[#747134] opacity-20 animate-ping"></div>
+              
+              {/* Tooltip */}
+              <div className="absolute bottom-full right-0 mb-2 px-3 py-1 text-xs text-white bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Chat with PawSewa AI
+              </div>
+            </button>
+          </div>
+        )}
 
-
-
-
-
+        <AIChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       </main>
-      <ScrollToTopButton />
-      <Footer />
+      
+      {/* ScrollToTopButton with proper positioning */}
+      <div className="fixed bottom-5 left-5 z-40">
+        <ScrollToTopButton />
+      </div>
+      
+      <div ref={footerRef}>
+        <Footer />
+      </div>
     </>
   );
-
-  
 };
-
-
-
