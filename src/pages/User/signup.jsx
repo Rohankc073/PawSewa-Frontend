@@ -133,7 +133,7 @@ const Signup = () => {
       if (response?.token) {
         localStorage.setItem("token", response.token);
         toast.success("Signup successful 🎉");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/login"), 2000);
       } else {
         toast.error("Signup failed: No token received.");
       }

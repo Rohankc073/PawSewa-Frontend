@@ -24,7 +24,7 @@ const Products = () => {
   const [sortBy, setSortBy] = useState("");
 
   const banners = [banner1, banner2, banner3];
-  const allBrands = ["Natural Food", "Pet Care", "Dogs Friend", "Pet Food", "Favorite Pet", "Green Line"];
+  const allBrands = ["Pedigree", "Drools", "Himalaya", "Purepet", "Royal Canin"];
 
   useEffect(() => {
     const interval = setInterval(() => {

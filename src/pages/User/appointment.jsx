@@ -264,19 +264,19 @@ export default function Appointment() {
         <section className="px-6 md:px-20 pb-20">
           {loading ? (
             <div className="text-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8a8a3b] border-t-transparent mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Loading doctors...</h3>
+              <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#8a8a3b] border-t-transparent mx-auto mb-2"></div>
+              <h3 className="text-xl font-semibold text-gray-600 ">Loading doctors...</h3>
               <p className="text-gray-500">Please wait while we fetch the best veterinarians for you</p>
             </div>
           ) : filteredDoctors.length > 0 ? (
-            <div className="space-y-8">
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl font-bold text-[#1d1d48]">
+            <div className="space-y-2">
+              <div className="text-center space-y">
+                {/* <h2 className="text-3xl font-bold text-[#1d1d48]">
                   Available Veterinarians
-                </h2>
-                <p className="text-gray-600">
+                </h2> */}
+                {/* <p className="text-gray-600">
                   Found {filteredDoctors.length} professional{filteredDoctors.length !== 1 ? 's' : ''} ready to help your pet
-                </p>
+                </p> */}
               </div>
               <EnhancedDoctorCards doctors={filteredDoctors} />
             </div>
