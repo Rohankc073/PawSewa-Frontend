@@ -42,9 +42,9 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-<Route path="/paymentsuccess" element={<PaymentSuccess />} />
-<Route path="/paymentfailure" element={<PaymentFailure />} />
-     
+        <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+        <Route path="/paymentfailure" element={<PaymentFailure />} />
+            
           <Route path="/profile" element={<Profile />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/adopt" element={<PetAdoption />} />
