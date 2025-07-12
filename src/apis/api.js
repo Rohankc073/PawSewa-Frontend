@@ -10,6 +10,11 @@ export const loginUser = async (credentials) => {
 export const registerUser = async (userData) => {
   const response = await axios.post(`${BASE_URL}/register`, userData);
   return response.data;
+
 };
+
+
+
+//Api folder
 
 
