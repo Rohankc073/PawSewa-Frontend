@@ -9,7 +9,7 @@ import Navbar from "../../components/Navbar";
 
 const generateEsewaSignature = ({ total_amount, transaction_uuid, product_code }) => {
   const signedFieldNames = "total_amount,transaction_uuid,product_code";
-  const secret = "8gBm/:&EnhH.1/q"; // UAT secret
+  const secret = "8gBm/:&EnhH.1/q";
   const signatureString = `total_amount=${total_amount},transaction_uuid=${transaction_uuid},product_code=${product_code}`;
   const signature = CryptoJS.HmacSHA256(signatureString, secret).toString(CryptoJS.enc.Base64);
   return { signedFieldNames, signature };
@@ -17,10 +17,9 @@ const generateEsewaSignature = ({ total_amount, transaction_uuid, product_code }
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [totals, setTotals] = useState({ subtotal: 0, shipping: 0, tax: 0, total: 0 });
+  const [totals, setTotals] = useState({ subtotal: 0, shipping: 120, tax: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState("");
-  const [country, setCountry] = useState("Nepal");
   const [phone, setPhone] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const esewaFormRef = useRef(null);
@@ -30,33 +29,42 @@ const CartPage = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
     const fetchCart = async () => {
-      if (user && token) {
-        try {
-          const res = await fetch(`http://localhost:5005/cart/${user._id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const cartData = await res.json();
-          const enrichedItems = [];
-          for (const item of cartData.items || []) {
-            await delay(100);
-            enrichedItems.push({ ...item, image: item.image || "" });
-          }
-          setCartItems(enrichedItems);
-        } catch (err) {
-          console.error("Failed to load cart:", err);
-        }
+      try {
+        const res = await fetch(`http://localhost:5005/cart/${user._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        const items = data.cart?.items || [];
+
+        // If you need to enrich product details from another API, do it here
+        const enrichedItems = await Promise.all(
+          items.map(async (item) => {
+            const productRes = await fetch(`http://localhost:5005/product/${item.productId}`);
+            const product = await productRes.json();
+            return {
+              productId: item.productId,
+              name: product.name || "Unknown",
+              price: product.price || 0,
+              image: product.image || "",
+              quantity: item.quantity || 1,
+            };
+          })
+        );
+
+        setCartItems(enrichedItems);
+      } catch (err) {
+        console.error("Failed to load cart:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchCart();
-  }, [user, token]);
+  }, [user._id, token]);
 
   useEffect(() => {
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+    const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0) * item.quantity, 0);
     const shipping = 120;
     const tax = 0.13 * subtotal;
     const total = subtotal + shipping + tax;
@@ -98,17 +106,16 @@ const CartPage = () => {
   };
 
   const getImageUrl = (image) => {
-    if (!image) return "/placeholder.png";
+    if (!image || image === "null" || image === "undefined") return "/placeholder.png";
     return `http://localhost:5005/${image.replace(/\\/g, "/")}`;
   };
 
   const handleEsewaSubmit = (e) => {
     e.preventDefault();
-    if (!address || !phone || !country) {
+    if (!address || !phone) {
       alert("Please fill in all delivery fields.");
       return;
     }
-
     esewaFormRef.current?.submit();
   };
 
@@ -116,7 +123,6 @@ const CartPage = () => {
     <>
       <Navbar />
       <main className="pt-24 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-        {/* Hero Section */}
         <section
           className="w-full h-[350px] bg-cover bg-center flex items-center justify-center relative"
           style={{ backgroundImage: `url(${doctorHero})` }}
@@ -128,7 +134,6 @@ const CartPage = () => {
           </div>
         </section>
 
-        {/* Cart Section */}
         <section className="px-4 md:px-8 lg:px-20 py-16 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12">
             {/* Left: Cart Items */}
@@ -149,36 +154,36 @@ const CartPage = () => {
                 </div>
 
                 <div className="p-8">
-                  {cartItems.length > 0 ? (
-                    <div className="space-y-8">
-                      {cartItems.map(({ productId, name, price, quantity, image }) => (
-                        <div
-                          key={productId}
-                          className="group bg-gray-50/50 hover:bg-gray-50 transition-all duration-300 p-6 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg"
-                        >
-                          <div className="flex flex-col md:flex-row gap-8 items-start">
-                            <div className="w-40 h-40 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                              <img src={getImageUrl(image)} alt={name} className="w-full h-full object-contain p-4" />
+                  {loading ? (
+                    <p>Loading cart...</p>
+                  ) : cartItems.length > 0 ? (
+                    cartItems.map(({ productId, name, price, quantity, image }) => (
+                      <div
+                        key={productId}
+                        className="group bg-gray-50/50 hover:bg-gray-50 transition-all duration-300 p-6 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-lg"
+                      >
+                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                          <div className="w-40 h-40 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                            <img src={getImageUrl(image)} alt={name} className="w-full h-full object-contain p-4" />
+                          </div>
+                          <div className="flex-1 space-y-4">
+                            <h3 className="text-xl font-bold text-[#1d1d48]">{name}</h3>
+                            <div className="text-sm text-gray-500">
+                              NPR {price.toLocaleString()} × {quantity}
                             </div>
-                            <div className="flex-1 space-y-4">
-                              <h3 className="text-xl font-bold text-[#1d1d48]">{name}</h3>
-                              <div className="text-sm text-gray-500">
-                                NPR {price.toLocaleString()} × {quantity}
-                              </div>
-                              <div className="text-2xl font-bold text-red-600">
-                                NPR {(price * quantity).toLocaleString()}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-4">
-                              <button onClick={() => updateQuantity(productId, -1)}><Minus /></button>
-                              <span>{quantity}</span>
-                              <button onClick={() => updateQuantity(productId, 1)}><Plus /></button>
-                              <button onClick={() => removeFromCart(productId)}><Trash2 /></button>
+                            <div className="text-2xl font-bold text-red-600">
+                              NPR {(price * quantity).toLocaleString()}
                             </div>
                           </div>
+                          <div className="flex items-center gap-4">
+                            <button onClick={() => updateQuantity(productId, -1)}><Minus /></button>
+                            <span>{quantity}</span>
+                            <button onClick={() => updateQuantity(productId, 1)}><Plus /></button>
+                            <button onClick={() => removeFromCart(productId)}><Trash2 /></button>
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))
                   ) : (
                     <p className="text-center text-gray-500 py-10">Your cart is empty.</p>
                   )}
@@ -186,10 +191,9 @@ const CartPage = () => {
               </div>
             </div>
 
-            {/* Right: Summary & Payment */}
+            {/* Right: Summary */}
             <div className="bg-white rounded-2xl p-8 shadow-xl space-y-6">
               <h2 className="text-xl font-bold text-[#1d1d48]">Order Summary</h2>
-
               <input type="text" placeholder="Delivery Address" className="w-full border border-gray-300 px-4 py-3 rounded-lg" value={address} onChange={(e) => setAddress(e.target.value)} />
               <input type="text" placeholder="Phone Number" className="w-full border border-gray-300 px-4 py-3 rounded-lg" value={phone} onChange={(e) => setPhone(e.target.value)} />
               <select className="w-full border border-gray-300 px-4 py-3 rounded-lg" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
@@ -204,12 +208,10 @@ const CartPage = () => {
                 <div className="flex justify-between text-lg font-bold border-t pt-2"><span>Total</span><span>Rs. {Math.round(totals.total).toLocaleString()}</span></div>
               </div>
 
-              {/* Cash Option */}
               {paymentMethod === "Cash on Delivery" && (
                 <button onClick={() => navigate("/checkout")} className="w-full bg-black text-white py-3 rounded-lg">Proceed to Checkout</button>
               )}
 
-              {/* eSewa Form */}
               {paymentMethod === "eSewa" && cartItems.length > 0 && (() => {
                 const transaction_uuid = uuidv4();
                 const subtotal = Math.round(totals.subtotal);

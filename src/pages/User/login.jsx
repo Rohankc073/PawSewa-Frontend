@@ -260,7 +260,7 @@ const Login = () => {
                 </a>
               </span>
               <a 
-                href="/forget-password" 
+                href="/forgot-password" 
                 className="text-[#8b8a47] font-semibold hover:text-[#6d6a35] transition-colors duration-200 text-sm hover:underline"
               >
                 Forgot Password?
